@@ -153,6 +153,9 @@ export default {
 		const client = await getOrCreateClient(env);
 		const context = getContext(request);
 		const html = await getAllFlagsOverview(client, context);
+		// Flush analytics events before the worker exits so they reach LaunchDarkly.
+		// waitUntil keeps the worker alive until flush completes without delaying the response.
+		ctx.waitUntil(client.flush());
 		return new Response(html, {
 			headers: { 'Content-Type': 'text/html; charset=utf-8' },
 		});

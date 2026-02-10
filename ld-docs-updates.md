@@ -152,4 +152,16 @@ export default {
 
 ---
 
+## 9. Flush events before the worker exits (analytics / experimentation)
+
+**Page:** [Cloudflare SDK reference](https://launchdarkly.com/docs/sdk/edge/cloudflare) (Initialize the client, Example Worker), [Flushing events – Cloudflare](https://launchdarkly.com/docs/sdk/features/flush#cloudflare)
+
+**Current docs:** The SDK reference shows initializing with `sendEvents: true` and the Example Worker returns a response without calling `flush`. The Flushing events page does document that edge workers must flush before exit and suggests `executionContext.waitUntil(client.flush())`.
+
+**Reality:** With `sendEvents: true`, analytics events are buffered and sent in the background. Cloudflare Workers are short-lived; if you return the response and the worker exits before the SDK sends the buffer, **events never reach LaunchDarkly** and nothing shows up in the dashboard (Contexts, experiments, metrics). This is easy to miss because the worker “works” (flags evaluate correctly from KV) but analytics don’t.
+
+**Ask:** In the Cloudflare SDK reference, (a) in the Example Worker and any “get started” flow that uses `sendEvents: true`, add a call to `ctx.waitUntil(client.flush())` before returning the response, with a one-line comment that flush is required so events reach LaunchDarkly before the worker exits; (b) in the Initialize the client section (or immediately after the Example Worker), add a short note that if you enable sending events, you must flush before the worker exits (and link to the Flushing events – Cloudflare section).
+
+---
+
 *Captured for use when requesting updates to LaunchDarkly Cloudflare SDK / integration documentation.*

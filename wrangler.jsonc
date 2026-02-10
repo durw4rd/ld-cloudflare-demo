@@ -18,8 +18,14 @@
 	 * Create the namespace in Cloudflare (or get the ID from the LaunchDarkly Cloudflare integration), then set "id" below.
 	 * Create: npx wrangler kv namespace create "LD_KV" (then use the id from the output).
 	 */
+	// LD syncs to the namespace in "id". Use preview_id for `wrangler dev`; same as id = use prod KV in dev.
+	// For dev to see LD data, run: npx wrangler dev --remote
 	"kv_namespaces": [
-		{ "binding": "LD_KV", "id": "1901a5f85c264bf6b658ab77bc69ade4" }
+		{
+			"binding": "LD_KV",
+			"id": "1901a5f85c264bf6b658ab77bc69ade4",
+			"preview_id": "1901a5f85c264bf6b658ab77bc69ade4"
+		}
 	],
 	/**
 	 * Smart Placement

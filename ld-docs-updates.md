@@ -128,4 +128,28 @@ export default {
 
 ---
 
+## 7. Local dev: use `wrangler dev --remote` so the Worker sees KV data from LaunchDarkly
+
+**Page:** [Cloudflare integration](https://launchdarkly.com/docs/integrations/cloudflare), [Cloudflare SDK reference](https://launchdarkly.com/docs/sdk/edge/cloudflare)
+
+**Current docs:** May show or mention `wrangler dev` for local development without noting the `--remote` flag.
+
+**Reality:** By default, `wrangler dev` runs the Worker **locally** and uses **simulated (in-memory) KV**, not the real Cloudflare KV namespace. LaunchDarkly’s integration writes flag data only to the **real** KV namespace you configured. So in local dev without `--remote`, the Worker never sees that data and the SDK can throw e.g. *"LD-Env-&lt;env-id&gt; is not found in KV"* even though the key exists in the Cloudflare dashboard.
+
+**Ask:** Add a short note that for local development with the SDK and KV, users should run **`wrangler dev --remote`** (or `npx wrangler dev --remote`) so the Worker uses the real Cloudflare KV namespace that LaunchDarkly populates. Optionally mention `preview_id` in the config (same as `id` or a separate preview namespace) and that `--remote` is required for the Worker to read from the synced KV.
+
+---
+
+## 8. Cloudflare API token for the LaunchDarkly integration: KV permissions
+
+**Page:** [Cloudflare integration](https://launchdarkly.com/docs/integrations/cloudflare) (Configure the LaunchDarkly Cloudflare integration)
+
+**Current docs:** Say the integration needs a Cloudflare API token and link to “Creating API tokens,” and may mention that the token needs **Account - Workers KV Storage: Edit** (or similar) permissions.
+
+**Reality:** The integration writes flag data from LaunchDarkly into your Workers KV namespace. For that to work, the API token must have **at least** edit (read/write) access to **Workers KV Storage** at the account level. Without it, the integration cannot populate the KV namespace and the SDK will not find flag data in KV.
+
+**Ask:** Explicitly state that the Cloudflare API token used for the integration must have **Workers KV Storage: Edit** (or equivalent edit access to KV) at minimum, and that this is required for the integration to sync flag data to the configured KV namespace.
+
+---
+
 *Captured for use when requesting updates to LaunchDarkly Cloudflare SDK / integration documentation.*

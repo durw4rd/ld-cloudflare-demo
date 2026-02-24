@@ -2,6 +2,8 @@
 
 A [Cloudflare Worker](https://developers.cloudflare.com/workers/) that uses the [LaunchDarkly Cloudflare SDK](https://docs.launchdarkly.com/sdk/edge/cloudflare/) to evaluate feature flags at the edge. Flag data is read from Workers KV (populated by the LaunchDarkly Cloudflare integration), so evaluations are low-latency and do not call LaunchDarkly on each request.
 
+A working example can be previewed here: https://ld-cloudflare-demo.mfasanek.workers.dev/
+
 ## What the worker does (MVP)
 
 The worker serves a single page that demonstrates **path-based flag isolation** and **experiment visibility**:
